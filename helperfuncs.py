@@ -30,7 +30,7 @@ def incr_arith_seq(start, target, common_diff): # return a list of tuples in the
 
 
 def decr_arith_seq(start, target, common_diff): # return a list of tuples in the form (week, target), used for running
-    common_diff = -common_diff
+    common_diff = -common_diff #assuming that the user inputs a positive value
     current = start
     result = []
     week = 1
@@ -44,3 +44,25 @@ def decr_arith_seq(start, target, common_diff): # return a list of tuples in the
 
 
 # geometric progressions
+
+def incr_geo_seq(start, target, common_ratio): #return a list of tuples in the form (week, target), used for pushups and situps
+    current = start
+    result = []
+    week = 1
+    while current < target:
+        current = start * (common_ratio ** (week - 1)) #GP formula for nth term
+        result.append((week, int(current//1)))
+        week += 1
+    result[-1] = (week-1, target)
+    return result
+
+def decr_geo_seq(start, target, common_ratio): #return a list of tuples in the form (week, target), used for running
+    current = start
+    result = []
+    week = 1
+    while current > target:
+        current = start * (common_ratio ** (week - 1)) #GP formula for nth term
+        result.append((week, int(current//1)))
+        week += 1
+    result[-1] = (week-1, target)
+    return result
