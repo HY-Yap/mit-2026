@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Planner</title>
+</head>
+<body>
+    <h1>Plan Generator</h1>
+    <p>Here you will input your training goals. A table detailing your fitness plan will appear when you submit.</p>
+    <form method = "POST" action = "/fitnessplan">
+        <h3>2.4km Plan</h3>
+        <label>
+            <p>
+            What is your current 2.4km running time?
+            <input type="text" name="start_mins"> Minutes
+            <input type="text" name="start_secs"> Seconds
+            </p>
+        </label>
+        <label>
+            <p>
+            What is your target 2.4km running time?
+            <input type="text" name="target_mins"> Minutes
+            <input type="text" name="target_secs"> Seconds
+            </p>
+        </label>
+        <label>
+            <p>
+            Do you want constant improvement or percentage improvement?
+            <select name="sequence">
+                <option value="arithmetic">Constant</option>
+                <option value="geometric">Percentage</option>
+            </select>
+            </p>
+        </label>
+        <label>
+            <p>
+            Enter your desired improvement (seconds or %)
+            <input type="text" name="improvement">
+            </p>
+        </label>
+
+        <input type = "submit">
+    </form>
+</body>
+</html>
