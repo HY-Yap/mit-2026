@@ -74,7 +74,7 @@ def decr_geo_seq(start, target, common_ratio): #return a list of targets, used f
 
 #tests
 
-print(incr_arith_seq(2, 21, 5))
-print(decr_arith_seq(700, 502, 21))
-print(incr_geo_seq(0, 21, 1.2))
-print(decr_geo_seq(1002, 670, 0.9))
+# print(incr_arith_seq(2, 21, 5))
+# print(decr_arith_seq(700, 502, 21))
+# print(incr_geo_seq(0, 21, 1.2))
+# print(decr_geo_seq(1002, 670, 0.9))
