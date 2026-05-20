@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from planner import *
 
-app = Flask(__name__)
+app = Flask(__name__) sigma boy
 
 @app.route("/")
 def index():
