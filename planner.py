@@ -9,7 +9,8 @@ def time_to_seconds(minutes, seconds):
     Convert minutes and seconds into total seconds.
     Example: 14 min 30 sec -> 870 seconds
     """
-    pass
+    result = seconds + minutes*60
+    return result
 
 
 def seconds_to_time(total_seconds):
@@ -17,7 +18,9 @@ def seconds_to_time(total_seconds):
     Convert total seconds into a MM:SS string.
     Example: 870 -> '14:30'
     """
-    pass
+    minutes = seconds // 60
+    seconds = seconds % 60
+    return f"{minutes}:{seconds}"
 
 
 # -----------------------------

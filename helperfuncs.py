@@ -1,21 +1,4 @@
-# Time conversion functions for running
 
-def time_to_seconds(minutes, seconds): #converts minutes and seconds into seconds
-    result = seconds + minutes*60
-    return result
-
-
-def seconds_to_time(seconds): #converts seconds to minutes and seconds. Returns in the format "mm:ss"
-    minutes = seconds // 60
-    seconds = seconds % 60
-    return f"{minutes}:{seconds}"
-
-
-
-
-#SnS functions to calculate and return results for workout targets
-
-#arithmetic progressions
 
 def incr_arith_seq(start, target, common_diff): # return a list of targets, used for pushups and situps
     current = start
