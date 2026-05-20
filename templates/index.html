@@ -12,8 +12,8 @@
   <body>
     <main class="page">
       <header class="hero">
-        <p class="eyebrow">100-point IPPT score planner</p>
-        <h1>Build a realistic path to your target IPPT band.</h1>
+        <p class="eyebrow">IPPT score planner</p>
+        <h1>Build your training plan.</h1>
       </header>
 
       <div class="planner-layout">
@@ -21,9 +21,7 @@
           <section class="card">
             <div class="card-heading">
               <h2>Profile</h2>
-              <p>
-                Enter your age. The app maps it to the correct IPPT age band.
-              </p>
+              <p>Enter your age.</p>
             </div>
 
             <label class="field-label" for="age">Age</label>
@@ -126,10 +124,7 @@
           <section class="card">
             <div class="card-heading">
               <h2>Target</h2>
-              <p>
-                Targets cannot be below your current reps or slower than your
-                current run.
-              </p>
+              <p>Your goal.</p>
             </div>
 
             <div class="slider-field">
@@ -148,7 +143,7 @@
               <input
                 type="range"
                 id="target-pu-range"
-                min="{{ values.current_pushups }}"
+                min="0"
                 max="60"
                 value="{{ values.target_pushups }}"
               />
@@ -171,7 +166,7 @@
               <input
                 type="range"
                 id="target-su-range"
-                min="{{ values.current_situps }}"
+                min="0"
                 max="60"
                 value="{{ values.target_situps }}"
               />
@@ -272,7 +267,7 @@
       }
 
       function ageBandIndex(age) {
-        const value = Number(age) || 22;
+        const value = Number(age) || 18;
         const index = scoringData.ageBands.findIndex(
           (band) => value >= band.min && value <= band.max,
         );
@@ -280,7 +275,7 @@
       }
 
       function currentAge() {
-        return Number(document.getElementById("age").value) || 22;
+        return Number(document.getElementById("age").value) || 18;
       }
 
       function pointsForReps(reps, station) {
@@ -367,16 +362,13 @@
         const targetRunRange = document.getElementById("target-run-range");
 
         targetPu.min = currentPu;
-        targetPuRange.min = currentPu;
         if (Number(targetPu.value) < currentPu) targetPu.value = currentPu;
         if (Number(targetPuRange.value) < currentPu) targetPuRange.value = currentPu;
 
         targetSu.min = currentSu;
-        targetSuRange.min = currentSu;
         if (Number(targetSu.value) < currentSu) targetSu.value = currentSu;
         if (Number(targetSuRange.value) < currentSu) targetSuRange.value = currentSu;
 
-        targetRunRange.max = currentRun;
         const targetRunSeconds = mmssToSecs(targetRun.value);
         if (targetRunSeconds === null || targetRunSeconds > currentRun) {
           targetRun.value = secsToMMSS(currentRun);
@@ -450,6 +442,17 @@
           updateLive();
         });
         input.addEventListener("input", () => {
+          const typed = Number(input.value);
+          if (!Number.isFinite(typed)) return;
+          const min = Number(input.min);
+          const max = Number(input.max);
+          range.value = Math.min(max, Math.max(min, typed));
+          updateLive();
+        });
+        input.addEventListener("blur", () => {
+          if (input.value.trim() === "") {
+            input.value = range.value;
+          }
           clampNumberInput(input);
           range.value = input.value;
           updateLive();
@@ -481,6 +484,11 @@
       wireRep("target-su-range", "target-su");
       wireRun("current-run-range", "current-run");
       wireRun("target-run-range", "target-run");
+      document.getElementById("planner-form").addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && event.target.tagName !== "TEXTAREA") {
+          event.preventDefault();
+        }
+      });
       document.getElementById("age").addEventListener("input", updateLive);
       document.getElementById("current-run-range").value =
         mmssToSecs(document.getElementById("current-run").value) || 900;

@@ -18,7 +18,11 @@ body {
   color: var(--ink);
   font-family: "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
   background:
-    radial-gradient(circle at 12% 5%, rgba(201, 80, 44, 0.2), transparent 26rem),
+    radial-gradient(
+      circle at 12% 5%,
+      rgba(201, 80, 44, 0.2),
+      transparent 26rem
+    ),
     linear-gradient(135deg, #eef1e8 0%, #f8ead6 100%);
 }
 
@@ -49,10 +53,14 @@ body {
 h1 {
   max-width: 780px;
   margin: 0;
-  font-size: clamp(34px, 7vw, 72px);
+  font-size: 60px;
   line-height: 0.92;
-  font-weight: 850;
+  font-weight: 700;
   letter-spacing: -0.06em;
+}
+
+.result-title {
+  text-align: left;
 }
 
 h2,
@@ -154,6 +162,77 @@ input[type="range"] {
   width: 100%;
   margin: 14px 0 2px;
   accent-color: var(--accent);
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+#current-pu-range,
+#target-pu-range {
+  --thumb-image: url("https://cdn-icons-png.flaticon.com/512/5147/5147122.png");
+  --thumb-image-size: 100%;
+}
+
+#current-su-range,
+#target-su-range {
+  --thumb-image: url("https://cdn-icons-png.flaticon.com/512/3043/3043279.png");
+  --thumb-image-size: 100%;
+}
+
+#current-run-range,
+#target-run-range {
+  --thumb-image: url("https://cdn-icons-png.flaticon.com/512/15864/15864673.png");
+  --thumb-image-size: 80%;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(36, 63, 42, 0.12),
+    rgba(201, 80, 44, 0.2)
+  );
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 44px;
+  height: 44px;
+  margin-top: -18px;
+  border: 0;
+  background: transparent;
+  background-image: var(--thumb-image);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: var(--thumb-image-size);
+  box-shadow: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-track {
+  height: 8px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(36, 63, 42, 0.12),
+    rgba(201, 80, 44, 0.2)
+  );
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  background-image: var(--thumb-image);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: var(--thumb-image-size);
+  box-shadow: none;
+  cursor: pointer;
 }
 
 .hint,

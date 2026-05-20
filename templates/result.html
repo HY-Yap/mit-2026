@@ -11,13 +11,10 @@
   </head>
   <body>
     <main class="center">
-      <h1>Your Training Plan</h1>
+      <h1 class="result-title">Your Training Plan</h1>
 
       <section class="summary">
-        <div>
-          Age: <strong>{{ plan.age }}</strong> · Band:
-          <strong>{{ plan.age_group.label }}</strong>
-        </div>
+        <div>Age: <strong>{{ plan.age }}</strong></div>
         <div>
           Current: <strong>{{ plan.current_score.total }}</strong>/100 ({{
           plan.current_score.grade }})
@@ -26,28 +23,11 @@
           Target: <strong>{{ plan.target_score.total }}</strong>/100 ({{
           plan.target_score.grade }})
         </div>
-        <div>
-          Next point: Push-ups +{{ plan.next_point.pushup_reps }}, Sit-ups +{{
-          plan.next_point.situp_reps }}{% if plan.next_point.run_time_display %},
-          run at least {{ plan.next_point.run_time_display }}{% endif %}
-        </div>
-        {% if plan.suggestions %}
-        <div>
-          To reach {{ plan.suggestions.next_grade }}: +{{
-          plan.suggestions.points_needed }} pts
-        </div>
-        {% endif %}
-        {% if plan.target_suggestions %}
-        <div>
-          Target needs +{{ plan.target_suggestions.points_needed }} pts to reach
-          {{ plan.target_suggestions.next_grade }}.
-        </div>
-        {% endif %}
       </section>
 
       {% if plan.warnings %}
       <section class="warning-card">
-        <h2>Realism Warning</h2>
+        <h2>Warning</h2>
         <p>The plan may be too aggressive for the selected timeframe:</p>
         <ul>
           {% for w in plan.warnings %}

@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 
 DEFAULT_FORM_VALUES = {
-    "age": "22",
+    "age": "18",
     "weeks": "8",
     "current_pushups": "20",
     "current_situps": "20",
@@ -53,7 +53,7 @@ def result():
         weeks = int(form.get('weeks', 8))
         current_run = parse_time_str(form.get('current_run', '15:00'))
         target_run = parse_time_str(form.get('target_run', '14:00'))
-        age = int(form.get('age', 22))
+        age = int(form.get('age', 18))
     except Exception:
         return "Invalid input", 400
 

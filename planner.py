@@ -261,12 +261,12 @@ def _score_from_rows(value, rows, age):
     return 0
 
 
-def points_for_reps(reps, station="pushup", age=22):
+def points_for_reps(reps, station="pushup", age=18):
     rows = SITUP_ROWS if station == "situp" else PUSHUP_ROWS
     return _score_from_rows(reps, rows, age)
 
 
-def points_for_run(seconds, age=22):
+def points_for_run(seconds, age=18):
     index = age_group_index(age)
     seconds = int(seconds or 0)
     for time_text, scores in RUN_ROWS:
@@ -285,7 +285,7 @@ def award_from_score(total, has_minimum_station_points=True):
     return current
 
 
-def calculate_ippt_score(pushups, situps, run_seconds, age=22):
+def calculate_ippt_score(pushups, situps, run_seconds, age=18):
     pushup_points = points_for_reps(pushups, "pushup", age)
     situp_points = points_for_reps(situps, "situp", age)
     run_points = points_for_run(run_seconds, age)
@@ -312,7 +312,7 @@ def next_award_info(total):
     return {}
 
 
-def reps_to_next_point(current_reps, station="pushup", age=22):
+def reps_to_next_point(current_reps, station="pushup", age=18):
     current_reps = max(0, int(current_reps or 0))
     current_points = points_for_reps(current_reps, station, age)
     if current_points >= 25:
@@ -323,14 +323,14 @@ def reps_to_next_point(current_reps, station="pushup", age=22):
     return 0
 
 
-def run_time_for_next_point(current_seconds, age=22):
+def run_time_for_next_point(current_seconds, age=18):
     current_points = points_for_run(current_seconds, age)
     if current_points >= 50:
         return None
     return run_time_for_score(current_points + 1, age)
 
 
-def run_time_for_score(required_points, age=22):
+def run_time_for_score(required_points, age=18):
     if required_points <= 0:
         return parse_time_str(RUN_ROWS[-1][0])
     if required_points > 50:
@@ -403,7 +403,7 @@ def generate_training_plan(
     current_run_seconds,
     target_run_seconds,
     weeks,
-    age=22,
+    age=18,
 ):
     weeks = max(1, min(52, int(weeks or 1)))
     push_seq = generate_arithmetic_sequence(current_pushups, target_pushups, weeks)
