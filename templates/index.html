@@ -4,9 +4,489 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>IPPT Training Planner</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
   </head>
   <body>
-    <h1>MIT - Training Planner</h1>
-    <a href="{{ url_for('fitness') }}">Click me to start your fitness plan!</a>
+    <main class="page">
+      <header class="hero">
+        <p class="eyebrow">100-point IPPT score planner</p>
+        <h1>Build a realistic path to your target IPPT band.</h1>
+      </header>
+
+      <div class="planner-layout">
+        <form method="POST" action="{{ url_for('result') }}" id="planner-form">
+          <section class="card">
+            <div class="card-heading">
+              <h2>Profile</h2>
+              <p>
+                Enter your age. The app maps it to the correct IPPT age band.
+              </p>
+            </div>
+
+            <label class="field-label" for="age">Age</label>
+            <input
+              type="number"
+              id="age"
+              name="age"
+              min="16"
+              max="60"
+              value="{{ values.age }}"
+            />
+            <p class="hint">
+              Scoring band: <strong id="age-band">22-24</strong>
+            </p>
+
+            <label class="field-label" for="weeks">Training weeks</label>
+            <input
+              type="number"
+              id="weeks"
+              name="weeks"
+              min="1"
+              max="52"
+              value="{{ values.weeks }}"
+            />
+          </section>
+
+          <section class="card">
+            <div class="card-heading">
+              <h2>Current</h2>
+              <p>Your current baseline.</p>
+            </div>
+
+            <div class="slider-field">
+              <label for="current-pu-range">
+                Push-ups
+                <input
+                  class="inline-value"
+                  type="number"
+                  id="current-pu"
+                  name="current_pushups"
+                  min="0"
+                  max="60"
+                  value="{{ values.current_pushups }}"
+                />
+              </label>
+              <input
+                type="range"
+                id="current-pu-range"
+                min="0"
+                max="60"
+                value="{{ values.current_pushups }}"
+              />
+            </div>
+
+            <div class="slider-field">
+              <label for="current-su-range">
+                Sit-ups
+                <input
+                  class="inline-value"
+                  type="number"
+                  id="current-su"
+                  name="current_situps"
+                  min="0"
+                  max="60"
+                  value="{{ values.current_situps }}"
+                />
+              </label>
+              <input
+                type="range"
+                id="current-su-range"
+                min="0"
+                max="60"
+                value="{{ values.current_situps }}"
+              />
+            </div>
+
+            <div class="slider-field">
+              <label for="current-run-range">
+                2.4 km run
+                <input
+                  class="inline-value time"
+                  type="text"
+                  id="current-run"
+                  name="current_run"
+                  value="{{ values.current_run }}"
+                  inputmode="numeric"
+                />
+              </label>
+              <input
+                type="range"
+                id="current-run-range"
+                min="510"
+                max="1100"
+                value="900"
+                step="10"
+              />
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-heading">
+              <h2>Target</h2>
+              <p>
+                Targets cannot be below your current reps or slower than your
+                current run.
+              </p>
+            </div>
+
+            <div class="slider-field">
+              <label for="target-pu-range">
+                Push-ups
+                <input
+                  class="inline-value"
+                  type="number"
+                  id="target-pu"
+                  name="target_pushups"
+                  min="{{ values.current_pushups }}"
+                  max="60"
+                  value="{{ values.target_pushups }}"
+                />
+              </label>
+              <input
+                type="range"
+                id="target-pu-range"
+                min="{{ values.current_pushups }}"
+                max="60"
+                value="{{ values.target_pushups }}"
+              />
+              <p class="hint" id="target-pu-next">--</p>
+            </div>
+
+            <div class="slider-field">
+              <label for="target-su-range">
+                Sit-ups
+                <input
+                  class="inline-value"
+                  type="number"
+                  id="target-su"
+                  name="target_situps"
+                  min="{{ values.current_situps }}"
+                  max="60"
+                  value="{{ values.target_situps }}"
+                />
+              </label>
+              <input
+                type="range"
+                id="target-su-range"
+                min="{{ values.current_situps }}"
+                max="60"
+                value="{{ values.target_situps }}"
+              />
+              <p class="hint" id="target-su-next">--</p>
+            </div>
+
+            <div class="slider-field">
+              <label for="target-run-range">
+                2.4 km run
+                <input
+                  class="inline-value time"
+                  type="text"
+                  id="target-run"
+                  name="target_run"
+                  value="{{ values.target_run }}"
+                  inputmode="numeric"
+                />
+              </label>
+              <input
+                type="range"
+                id="target-run-range"
+                min="510"
+                max="900"
+                value="840"
+                step="10"
+              />
+              <p class="hint" id="target-run-next">--</p>
+            </div>
+          </section>
+
+          <button class="submit-btn" type="submit">Generate Plan</button>
+        </form>
+
+        <aside class="card score-card" aria-live="polite">
+          <div class="card-heading">
+            <h2>Score Insights</h2>
+            <p>Live score, target gap, and award bands.</p>
+          </div>
+
+          <div class="score-row">
+            <span>Current</span>
+            <strong><span id="current-score">--</span> pts</strong>
+            <em id="current-grade">--</em>
+          </div>
+
+          <div class="score-row">
+            <span>Target</span>
+            <strong><span id="target-score">--</span> pts</strong>
+            <em id="target-grade">--</em>
+          </div>
+
+          <div class="breakdown">
+            <h3>Target breakdown</h3>
+            <p>
+              Push-ups <strong id="target-pu-points">--</strong>/25 · Sit-ups
+              <strong id="target-su-points">--</strong>/25 · Run
+              <strong id="target-run-points">--</strong>/50
+            </p>
+          </div>
+
+          <div class="insight-box" id="current-band-insight">--</div>
+          <div class="insight-box secondary" id="target-band-insight">--</div>
+
+          <section class="scoring-system">
+            <h3>Scoring System</h3>
+            <p>Push-ups: 25 pts · Sit-ups: 25 pts · 2.4 km run: 50 pts.</p>
+            <ul>
+              <li>Pass: 51-60 pts</li>
+              <li>Pass with Incentive: 61-74 pts</li>
+              <li>Silver: 75-84 pts</li>
+              <li>Gold: 85-100 pts</li>
+            </ul>
+            <p>
+              Minimum 1 point in each station is required for a passing band.
+            </p>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <script>
+      const scoringData = {{ scoring_data|tojson }};
+
+      function secsToMMSS(seconds) {
+        const safeSeconds = Math.max(0, Math.round(seconds || 0));
+        const minutes = Math.floor(safeSeconds / 60);
+        const remainder = safeSeconds % 60;
+        return `${minutes}:${remainder < 10 ? "0" : ""}${remainder}`;
+      }
+
+      function mmssToSecs(value) {
+        const text = String(value).trim();
+        if (!text) return null;
+        if (!text.includes(":")) return Math.round(Number(text) * 60);
+        const [minutes, seconds] = text.split(":");
+        const total = Number(minutes) * 60 + Number(seconds);
+        return Number.isFinite(total) ? Math.round(total) : null;
+      }
+
+      function ageBandIndex(age) {
+        const value = Number(age) || 22;
+        const index = scoringData.ageBands.findIndex(
+          (band) => value >= band.min && value <= band.max,
+        );
+        return index === -1 ? scoringData.ageBands.length - 1 : index;
+      }
+
+      function currentAge() {
+        return Number(document.getElementById("age").value) || 22;
+      }
+
+      function pointsForReps(reps, station) {
+        const rows = station === "situp" ? scoringData.situpRows : scoringData.pushupRows;
+        const value = Math.max(0, Math.round(Number(reps) || 0));
+        const index = ageBandIndex(currentAge());
+        if (value >= rows[0][0]) return rows[0][1][index];
+        const row = rows.find((item) => item[0] === value);
+        return row ? row[1][index] : 0;
+      }
+
+      function pointsForRun(seconds) {
+        const value = Math.round(Number(seconds) || 0);
+        const index = ageBandIndex(currentAge());
+        for (const [time, scores] of scoringData.runRows) {
+          if (value <= mmssToSecs(time)) return scores[index];
+        }
+        return 0;
+      }
+
+      function awardFromScore(total, stationPoints) {
+        if (Math.min(...stationPoints) < 1) return "Fail";
+        let award = "Fail";
+        for (const band of scoringData.awardBands) {
+          if (total >= band.threshold) award = band.label;
+        }
+        return award;
+      }
+
+      function score(pushups, situps, runSeconds) {
+        const parts = [
+          pointsForReps(pushups, "pushup"),
+          pointsForReps(situps, "situp"),
+          pointsForRun(runSeconds),
+        ];
+        const total = parts.reduce((sum, value) => sum + value, 0);
+        return { total, parts, grade: awardFromScore(total, parts) };
+      }
+
+      function nextAward(total) {
+        return scoringData.awardBands.find((band) => total < band.threshold) || null;
+      }
+
+      function repsToNextPoint(current, station) {
+        const value = Math.max(0, Math.round(Number(current) || 0));
+        const currentPoints = pointsForReps(value, station);
+        if (currentPoints >= 25) return 0;
+        for (let reps = value + 1; reps <= 60; reps += 1) {
+          if (pointsForReps(reps, station) > currentPoints) return reps - value;
+        }
+        return 0;
+      }
+
+      function runTimeForScore(requiredPoints) {
+        if (requiredPoints <= 0) {
+          return mmssToSecs(scoringData.runRows[scoringData.runRows.length - 1][0]);
+        }
+        if (requiredPoints > 50) return null;
+        const index = ageBandIndex(currentAge());
+        let bestTime = null;
+        for (const [time, scores] of scoringData.runRows) {
+          if (scores[index] >= requiredPoints) bestTime = mmssToSecs(time);
+        }
+        return bestTime;
+      }
+
+      function clampNumberInput(input) {
+        const min = Number(input.min);
+        const max = Number(input.max);
+        const value = Number(input.value);
+        if (!Number.isFinite(value)) return;
+        input.value = Math.min(max, Math.max(min, value));
+      }
+
+      function constrainTargets() {
+        const currentPu = Number(document.getElementById("current-pu").value) || 0;
+        const currentSu = Number(document.getElementById("current-su").value) || 0;
+        const currentRun = mmssToSecs(document.getElementById("current-run").value) || 900;
+        const targetPu = document.getElementById("target-pu");
+        const targetSu = document.getElementById("target-su");
+        const targetPuRange = document.getElementById("target-pu-range");
+        const targetSuRange = document.getElementById("target-su-range");
+        const targetRun = document.getElementById("target-run");
+        const targetRunRange = document.getElementById("target-run-range");
+
+        targetPu.min = currentPu;
+        targetPuRange.min = currentPu;
+        if (Number(targetPu.value) < currentPu) targetPu.value = currentPu;
+        if (Number(targetPuRange.value) < currentPu) targetPuRange.value = currentPu;
+
+        targetSu.min = currentSu;
+        targetSuRange.min = currentSu;
+        if (Number(targetSu.value) < currentSu) targetSu.value = currentSu;
+        if (Number(targetSuRange.value) < currentSu) targetSuRange.value = currentSu;
+
+        targetRunRange.max = currentRun;
+        const targetRunSeconds = mmssToSecs(targetRun.value);
+        if (targetRunSeconds === null || targetRunSeconds > currentRun) {
+          targetRun.value = secsToMMSS(currentRun);
+          targetRunRange.value = currentRun;
+        }
+      }
+
+      function updateLive() {
+        constrainTargets();
+
+        const band = scoringData.ageBands[ageBandIndex(currentAge())];
+        document.getElementById("age-band").innerText = band.label;
+
+        const cpu = Number(document.getElementById("current-pu").value) || 0;
+        const csu = Number(document.getElementById("current-su").value) || 0;
+        const cru = mmssToSecs(document.getElementById("current-run").value);
+        const tpu = Number(document.getElementById("target-pu").value) || 0;
+        const tsu = Number(document.getElementById("target-su").value) || 0;
+        const tru = mmssToSecs(document.getElementById("target-run").value);
+
+        const current = score(cpu, csu, cru);
+        const target = score(tpu, tsu, tru);
+        document.getElementById("current-score").innerText = current.total;
+        document.getElementById("current-grade").innerText = current.grade;
+        document.getElementById("target-score").innerText = target.total;
+        document.getElementById("target-grade").innerText = target.grade;
+        document.getElementById("target-pu-points").innerText = target.parts[0];
+        document.getElementById("target-su-points").innerText = target.parts[1];
+        document.getElementById("target-run-points").innerText = target.parts[2];
+
+        const puNext = repsToNextPoint(tpu, "pushup");
+        const suNext = repsToNextPoint(tsu, "situp");
+        document.getElementById("target-pu-next").innerText = puNext
+          ? `${puNext} more push-up${puNext === 1 ? "" : "s"} to gain the next point.`
+          : "Already at max push-up points.";
+        document.getElementById("target-su-next").innerText = suNext
+          ? `${suNext} more sit-up${suNext === 1 ? "" : "s"} to gain the next point.`
+          : "Already at max sit-up points.";
+
+        const targetNext = nextAward(target.total);
+        if (targetNext) {
+          const requiredRunPoints = targetNext.threshold - target.parts[0] - target.parts[1];
+          const runTime = runTimeForScore(requiredRunPoints);
+          document.getElementById("target-run-next").innerText =
+            runTime && requiredRunPoints <= 50
+              ? `Minimum run time for ${targetNext.label}: ${secsToMMSS(runTime)}.`
+              : `${targetNext.label} is not reachable from run alone with these reps.`;
+          document.getElementById("target-band-insight").innerText =
+            `Target needs ${targetNext.threshold - target.total} more point${
+              targetNext.threshold - target.total === 1 ? "" : "s"
+            } for ${targetNext.label}.`;
+        } else {
+          document.getElementById("target-run-next").innerText = "Target is already Gold.";
+          document.getElementById("target-band-insight").innerText =
+            "Target is already in the Gold band.";
+        }
+
+        const currentNext = nextAward(current.total);
+        document.getElementById("current-band-insight").innerText = currentNext
+          ? `Current score needs ${currentNext.threshold - current.total} more point${
+              currentNext.threshold - current.total === 1 ? "" : "s"
+            } for ${currentNext.label}.`
+          : "Current score is already in the Gold band.";
+      }
+
+      function wireRep(rangeId, inputId) {
+        const range = document.getElementById(rangeId);
+        const input = document.getElementById(inputId);
+        range.addEventListener("input", () => {
+          input.value = range.value;
+          updateLive();
+        });
+        input.addEventListener("input", () => {
+          clampNumberInput(input);
+          range.value = input.value;
+          updateLive();
+        });
+      }
+
+      function wireRun(rangeId, inputId) {
+        const range = document.getElementById(rangeId);
+        const input = document.getElementById(inputId);
+        range.addEventListener("input", () => {
+          input.value = secsToMMSS(range.value);
+          updateLive();
+        });
+        input.addEventListener("input", () => {
+          const seconds = mmssToSecs(input.value);
+          if (seconds !== null) range.value = seconds;
+          updateLive();
+        });
+        input.addEventListener("blur", () => {
+          const seconds = mmssToSecs(input.value);
+          if (seconds !== null) input.value = secsToMMSS(seconds);
+          updateLive();
+        });
+      }
+
+      wireRep("current-pu-range", "current-pu");
+      wireRep("current-su-range", "current-su");
+      wireRep("target-pu-range", "target-pu");
+      wireRep("target-su-range", "target-su");
+      wireRun("current-run-range", "current-run");
+      wireRun("target-run-range", "target-run");
+      document.getElementById("age").addEventListener("input", updateLive);
+      document.getElementById("current-run-range").value =
+        mmssToSecs(document.getElementById("current-run").value) || 900;
+      document.getElementById("target-run-range").value =
+        mmssToSecs(document.getElementById("target-run").value) || 840;
+      updateLive();
+    </script>
   </body>
 </html>
